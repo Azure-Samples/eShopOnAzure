@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.Identity.Web.Resource;
 using CardType = eShop.Ordering.API.Application.Queries.CardType;
 using Order = eShop.Ordering.API.Application.Queries.Order;
 
@@ -17,6 +19,8 @@ public static class OrdersApi
         return app;
     }
 
+    [Authorize]
+    [RequiredScope(RequiredScopesConfigurationKey = "AzureAD:Scopes")]
     public static async Task<Results<Ok, BadRequest<string>, ProblemHttpResult>> CancelOrderAsync(
         [FromHeader(Name = "x-requestid")] Guid requestId,
         CancelOrderCommand command,
@@ -46,6 +50,8 @@ public static class OrdersApi
         return TypedResults.Ok();
     }
 
+    [Authorize]
+    [RequiredScope(RequiredScopesConfigurationKey = "AzureAD:Scopes")]
     public static async Task<Results<Ok, BadRequest<string>, ProblemHttpResult>> ShipOrderAsync(
         [FromHeader(Name = "x-requestid")] Guid requestId,
         ShipOrderCommand command,
@@ -75,6 +81,8 @@ public static class OrdersApi
         return TypedResults.Ok();
     }
 
+    [Authorize]
+    [RequiredScope(RequiredScopesConfigurationKey = "AzureAD:Scopes")]
     public static async Task<Results<Ok<Order>, NotFound>> GetOrderAsync(int orderId, [AsParameters] OrderServices services)
     {
         try
@@ -88,6 +96,8 @@ public static class OrdersApi
         }
     }
 
+    [Authorize]
+    [RequiredScope(RequiredScopesConfigurationKey = "AzureAD:Scopes")]
     public static async Task<Ok<IEnumerable<OrderSummary>>> GetOrdersByUserAsync([AsParameters] OrderServices services)
     {
         var userId = services.IdentityService.GetUserIdentity();
@@ -101,6 +111,8 @@ public static class OrdersApi
         return TypedResults.Ok(cardTypes);
     }
 
+    [Authorize]
+    [RequiredScope(RequiredScopesConfigurationKey = "AzureAD:Scopes")]
     public static async Task<OrderDraftDTO> CreateOrderDraftAsync(CreateOrderDraftCommand command, [AsParameters] OrderServices services)
     {
         services.Logger.LogInformation(
@@ -113,6 +125,8 @@ public static class OrdersApi
         return await services.Mediator.Send(command);
     }
 
+    [Authorize]
+    [RequiredScope(RequiredScopesConfigurationKey = "AzureAD:Scopes")]
     public static async Task<Results<Ok, BadRequest<string>>> CreateOrderAsync(
         [FromHeader(Name = "x-requestid")] Guid requestId,
         CreateOrderRequest request,

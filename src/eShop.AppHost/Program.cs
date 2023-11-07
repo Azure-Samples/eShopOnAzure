@@ -11,20 +11,14 @@ var postgres = builder.AddPostgresContainer("postgres")
     });
 
 var catalogDb = postgres.AddDatabase("CatalogDB");
-var identityDb = postgres.AddDatabase("IdentityDB");
 var orderDb = postgres.AddDatabase("OrderingDB");
 var webhooksDb = postgres.AddDatabase("WebHooksDB");
 
 // Services
-var identityApi = builder.AddProject<Projects.Identity_API>("identity-api")
-    .WithReference(identityDb)
-	.WithReference(appInsights);
-
 var basketApi = builder.AddProject<Projects.Basket_API>("basket-api")
     .WithReference(redis)
     .WithReference(serviceBus)
-    .WithReference(appInsights)
-	.WithEnvironmentForServiceBinding("Identity__Url", identityApi);
+    .WithReference(appInsights);
 
 var catalogApi = builder.AddProject<Projects.Catalog_API>("catalog-api")
     .WithReference(serviceBus)
@@ -34,8 +28,7 @@ var catalogApi = builder.AddProject<Projects.Catalog_API>("catalog-api")
 var orderingApi = builder.AddProject<Projects.Ordering_API>("ordering-api")
     .WithReference(serviceBus)
     .WithReference(orderDb)
-	.WithReference(appInsights)
-    .WithEnvironmentForServiceBinding("Identity__Url", identityApi);
+	.WithReference(appInsights);
 
 builder.AddProject<Projects.Ordering_BackgroundTasks>("order-processor")
     .WithReference(serviceBus)
@@ -49,20 +42,17 @@ builder.AddProject<Projects.Payment_API>("payment-processor")
 var webHooksApi = builder.AddProject<Projects.Webhooks_API>("webhooks-api")
     .WithReference(serviceBus)
     .WithReference(webhooksDb)
-	.WithReference(appInsights)
-    .WithEnvironmentForServiceBinding("Identity__Url", identityApi);
+	.WithReference(appInsights);
 
 // Reverse proxies
 builder.AddProject<Projects.Mobile_Bff_Shopping>("mobile-bff")
     .WithReference(catalogApi)
-    .WithReference(identityApi)
 	.WithReference(appInsights);
 
 // Apps
 var webhooksClient = builder.AddProject<Projects.WebhookClient>("webhooksclient")
     .WithReference(webHooksApi)
-	.WithReference(appInsights)
-    .WithEnvironmentForServiceBinding("IdentityUrl", identityApi);
+	.WithReference(appInsights);
 
 var webApp = builder.AddProject<Projects.WebApp>("webapp")
     .WithReference(basketApi)
@@ -70,18 +60,10 @@ var webApp = builder.AddProject<Projects.WebApp>("webapp")
     .WithReference(orderingApi)
     .WithReference(serviceBus)
 	.WithReference(appInsights)
-    .WithEnvironmentForServiceBinding("IdentityUrl", identityApi)
     .WithLaunchProfile("https");
 
 // Wire up the callback urls (self referencing)
 webApp.WithEnvironmentForServiceBinding("CallBackUrl", webApp, bindingName: "https");
 webhooksClient.WithEnvironmentForServiceBinding("CallBackUrl", webhooksClient);
-
-// Identity has a reference to all of the apps for callback urls, this is a cyclic reference
-identityApi.WithEnvironmentForServiceBinding("BasketApiClient", basketApi)
-           .WithEnvironmentForServiceBinding("OrderingApiClient", orderingApi)
-           .WithEnvironmentForServiceBinding("WebhooksWebClient", webhooksClient)
-           .WithEnvironmentForServiceBinding("WebhooksApiClient", webHooksApi)
-           .WithEnvironmentForServiceBinding("WebAppClient", webApp, bindingName: "https");
 
 builder.Build().Run();

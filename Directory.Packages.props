@@ -87,6 +87,7 @@
     <PackageVersion Include="AspNetCore.HealthChecks.AzureServiceBus" Version="7.0.0" />
     <PackageVersion Include="Azure.Messaging.ServiceBus" Version="7.16.2" />
     <PackageVersion Include="Azure.Monitor.OpenTelemetry.AspNetCore" Version="1.0.0-beta.8" />
+    <PackageVersion Include="Microsoft.Identity.Web" Version="2.15.3" />
     <!-- Miscellaneous -->
     <PackageVersion Include="Automapper" Version="12.0.1" />
     <PackageVersion Include="BuildBundlerMinifier" Version="3.2.449" />

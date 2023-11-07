@@ -20,7 +20,12 @@
         </div>
     </Authorized>
     <NotAuthorized>
-        <a href="@Pages.User.LogIn.Url(Nav)"><img src="icons/user.svg" /></a>
+        <div class="dropdown-menu">
+            <span class="dropdown-button"><img src="icons/user.svg" /></span>
+            <div class="dropdown-content">
+                <a class="dropdown-item" href="@Pages.User.LogIn.Url(Nav)">Login</a>
+            </div>
+        </div>
     </NotAuthorized>
 </AuthorizeView>
 

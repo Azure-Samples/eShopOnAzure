@@ -2,9 +2,11 @@
 using eShop.Basket.API.Repositories;
 using eShop.Basket.API.Extensions;
 using eShop.Basket.API.Model;
+using Microsoft.Identity.Web.Resource;
 
 namespace eShop.Basket.API.Grpc;
 
+[Authorize]
 public class BasketService(
     IBasketRepository repository,
     ILogger<BasketService> logger) : Basket.BasketBase
@@ -33,6 +35,8 @@ public class BasketService(
         return new();
     }
 
+    [Authorize]
+    [RequiredScope(RequiredScopesConfigurationKey = "AzureAD:Scopes")]
     public override async Task<CustomerBasketResponse> UpdateBasket(UpdateBasketRequest request, ServerCallContext context)
     {
         var userId = context.GetUserIdentity();
@@ -56,6 +60,8 @@ public class BasketService(
         return MapToCustomerBasketResponse(response);
     }
 
+    [Authorize]
+    [RequiredScope(RequiredScopesConfigurationKey = "AzureAD:Scopes")]
     public override async Task<DeleteBasketResponse> DeleteBasket(DeleteBasketRequest request, ServerCallContext context)
     {
         var userId = context.GetUserIdentity();

@@ -19,7 +19,6 @@
     <ProjectReference Include="..\Mobile.Bff.Shopping\Mobile.Bff.Shopping.csproj" />
     <ProjectReference Include="..\Basket.API\Basket.API.csproj" />
     <ProjectReference Include="..\Catalog.API\Catalog.API.csproj" />
-    <ProjectReference Include="..\Identity.API\Identity.API.csproj" />
     <ProjectReference Include="..\Ordering.API\Ordering.API.csproj" />
     <ProjectReference Include="..\Ordering.BackgroundTasks\Ordering.BackgroundTasks.csproj" />
     <ProjectReference Include="..\Payment.API\Payment.API.csproj" />
