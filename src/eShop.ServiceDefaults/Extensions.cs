@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Azure.Monitor.OpenTelemetry.AspNetCore;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
@@ -89,12 +91,23 @@ public static partial class Extensions
         }
 
         // Configure alternative exporters
-        builder.Services.AddOpenTelemetry()
+        var openTelemetry = builder.Services.AddOpenTelemetry()
                         .WithMetrics(metrics =>
                         {
                             // Uncomment the following line to enable the Prometheus endpoint
                             //metrics.AddPrometheusExporter();
                         });
+
+        if (builder.Configuration.GetConnectionString("AppInsights") is string connectionString)
+        {
+            if (!string.IsNullOrEmpty(connectionString))
+            {
+                openTelemetry.UseAzureMonitor(o =>
+                {
+                    o.ConnectionString = connectionString;
+                });
+            }
+        }
 
         return builder;
     }

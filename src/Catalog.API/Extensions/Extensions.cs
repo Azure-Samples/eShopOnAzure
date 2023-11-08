@@ -1,4 +1,5 @@
 ﻿using eShop.Catalog.API.Services;
+using eShop.EventBusServiceBus;
 
 public static class Extensions
 {
@@ -20,7 +21,7 @@ public static class Extensions
 
         builder.Services.AddTransient<ICatalogIntegrationEventService, CatalogIntegrationEventService>();
 
-        builder.AddRabbitMqEventBus("EventBus")
+        builder.AddServiceBusEventBus("EventBus")
                .AddSubscription<OrderStatusChangedToAwaitingValidationIntegrationEvent, OrderStatusChangedToAwaitingValidationIntegrationEventHandler>()
                .AddSubscription<OrderStatusChangedToPaidIntegrationEvent, OrderStatusChangedToPaidIntegrationEventHandler>();
 

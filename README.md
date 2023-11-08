@@ -23,7 +23,7 @@ A reference .NET application implementing an eCommerce web site using a services
 
 ### Prerequisites
 
-* Clone the eShop repository: https://github.com/dotnet/eshop
+* Clone the eShop repository: https://github.com/Azure-Samples/eShopOnAzure
 * (Windows only) Install Visual Studio Int Preview: https://aka.ms/vs/17/intpreview/vs_enterprise.exe
 * Install & start Docker Desktop:  https://docs.docker.com/engine/install/
 * Install the Azure Artifacts Credential Provider from https://github.com/microsoft/artifacts-credprovider
