@@ -1,4 +1,6 @@
-﻿var builder = WebApplication.CreateBuilder(args);
+﻿using Microsoft.Identity.Web;
+
+var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
 builder.AddDefaultOpenApi();
@@ -14,6 +16,7 @@ app.MapDefaultEndpoints();
 
 app.MapGroup("/api/v1/orders")
    .MapOrdersApi()
-   .RequireAuthorization();
+   .RequireAuthorization()
+   .RequireScope(app.Configuration.GetValue<string>("AzureAD:Scopes").Split(' '));
 
 app.Run();
