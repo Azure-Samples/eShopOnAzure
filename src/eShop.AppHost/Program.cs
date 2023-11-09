@@ -1,7 +1,8 @@
 ﻿var builder = DistributedApplication.CreateBuilder(args);
 
+var appInsights = builder.AddApplicationInsights("appInsights");
 var redis = builder.AddRedisContainer("redis");
-var rabbitMq = builder.AddRabbitMQContainer("EventBus");
+var serviceBus = builder.AddAzureServiceBus("EventBus", topicNames: ["eshop_event_bus"]);
 var postgres = builder.AddPostgresContainer("postgres")
     .WithAnnotation(new ContainerImageAnnotation
     {
@@ -16,49 +17,59 @@ var webhooksDb = postgres.AddDatabase("WebHooksDB");
 
 // Services
 var identityApi = builder.AddProject<Projects.Identity_API>("identity-api")
-    .WithReference(identityDb);
+    .WithReference(identityDb)
+	.WithReference(appInsights);
 
 var basketApi = builder.AddProject<Projects.Basket_API>("basket-api")
     .WithReference(redis)
-    .WithReference(rabbitMq)
-    .WithEnvironmentForServiceBinding("Identity__Url", identityApi);
+    .WithReference(serviceBus)
+    .WithReference(appInsights)
+	.WithEnvironmentForServiceBinding("Identity__Url", identityApi);
 
 var catalogApi = builder.AddProject<Projects.Catalog_API>("catalog-api")
-    .WithReference(rabbitMq)
-    .WithReference(catalogDb);
+    .WithReference(serviceBus)
+    .WithReference(catalogDb)
+    .WithReference(appInsights);
 
 var orderingApi = builder.AddProject<Projects.Ordering_API>("ordering-api")
-    .WithReference(rabbitMq)
+    .WithReference(serviceBus)
     .WithReference(orderDb)
+	.WithReference(appInsights)
     .WithEnvironmentForServiceBinding("Identity__Url", identityApi);
 
 builder.AddProject<Projects.Ordering_BackgroundTasks>("order-processor")
-    .WithReference(rabbitMq)
-    .WithReference(orderDb);
+    .WithReference(serviceBus)
+    .WithReference(orderDb)
+    .WithReference(appInsights);
 
 builder.AddProject<Projects.Payment_API>("payment-processor")
-    .WithReference(rabbitMq);
+    .WithReference(serviceBus)
+    .WithReference(appInsights);
 
 var webHooksApi = builder.AddProject<Projects.Webhooks_API>("webhooks-api")
-    .WithReference(rabbitMq)
+    .WithReference(serviceBus)
     .WithReference(webhooksDb)
+	.WithReference(appInsights)
     .WithEnvironmentForServiceBinding("Identity__Url", identityApi);
 
 // Reverse proxies
 builder.AddProject<Projects.Mobile_Bff_Shopping>("mobile-bff")
     .WithReference(catalogApi)
-    .WithReference(identityApi);
+    .WithReference(identityApi)
+	.WithReference(appInsights);
 
 // Apps
 var webhooksClient = builder.AddProject<Projects.WebhookClient>("webhooksclient")
     .WithReference(webHooksApi)
+	.WithReference(appInsights)
     .WithEnvironmentForServiceBinding("IdentityUrl", identityApi);
 
 var webApp = builder.AddProject<Projects.WebApp>("webapp")
     .WithReference(basketApi)
     .WithReference(catalogApi)
     .WithReference(orderingApi)
-    .WithReference(rabbitMq)
+    .WithReference(serviceBus)
+	.WithReference(appInsights)
     .WithEnvironmentForServiceBinding("IdentityUrl", identityApi)
     .WithLaunchProfile("https");
 

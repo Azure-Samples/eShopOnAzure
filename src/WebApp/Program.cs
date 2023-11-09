@@ -1,4 +1,5 @@
 ﻿using eShop.WebAppComponents.Services;
+using eShop.EventBusServiceBus;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,7 +8,7 @@ builder.AddServiceDefaults();
 builder.Services.AddRazorComponents().AddInteractiveServerComponents();
 
 builder.AddAuthenticationServices();
-builder.AddRabbitMqEventBus("EventBus")
+builder.AddServiceBusEventBus("EventBus")
        .AddEventBusSubscriptions();
 
 // Application services

@@ -2,9 +2,10 @@
   "solution": {
     "path": "eShop.sln",
     "projects": [
+      "src\\AzureServices\\AzureServices.csproj",
       "src\\Basket.API\\Basket.API.csproj",
       "src\\Catalog.API\\Catalog.API.csproj",
-      "src\\EventBusRabbitMQ\\EventBusRabbitMQ.csproj",
+      "src\\EventBusServiceBus\\EventBusServiceBus.csproj",
       "src\\EventBus\\EventBus.csproj",
       "src\\Identity.API\\Identity.API.csproj",
       "src\\IntegrationEventLogEF\\IntegrationEventLogEF.csproj",

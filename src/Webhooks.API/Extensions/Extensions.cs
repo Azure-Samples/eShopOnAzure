@@ -1,10 +1,12 @@
-﻿internal static class Extensions
+﻿using eShop.EventBusServiceBus;
+
+internal static class Extensions
 {
     public static void AddApplicationServices(this IHostApplicationBuilder builder)
     {
         builder.AddDefaultAuthentication();
 
-        builder.AddRabbitMqEventBus("EventBus")
+        builder.AddServiceBusEventBus("EventBus")
                .AddEventBusSubscriptions();
 
         builder.AddNpgsqlDbContext<WebhooksContext>("WebHooksDB");
