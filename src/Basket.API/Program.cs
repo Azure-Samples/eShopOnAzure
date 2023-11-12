@@ -13,6 +13,6 @@ app.MapDefaultEndpoints();
 
 app.MapGrpcService<BasketService>()
    .RequireAuthorization()
-   .RequireScope(app.Configuration.GetValue<string>("AzureAD:Scopes").Split(' '));
+   .RequireScope(app.Configuration["AzureAD:Scopes"].Split(' '));
 
 app.Run();
