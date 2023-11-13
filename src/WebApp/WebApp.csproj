@@ -22,6 +22,7 @@
     <PackageReference Include="Google.Protobuf" />
     <PackageReference Include="Grpc.AspNetCore.Server.ClientFactory" />
     <PackageReference Include="Grpc.Tools" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.Identity.Web" />
   </ItemGroup>
 
   <ItemGroup>

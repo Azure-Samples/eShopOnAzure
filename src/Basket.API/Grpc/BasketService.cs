@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using eShop.Basket.API.Repositories;
-using eShop.Basket.API.Extensions;
 using eShop.Basket.API.Model;
 
 namespace eShop.Basket.API.Grpc;
@@ -9,7 +8,6 @@ public class BasketService(
     IBasketRepository repository,
     ILogger<BasketService> logger) : Basket.BasketBase
 {
-    [AllowAnonymous]
     public override async Task<CustomerBasketResponse> GetBasket(GetBasketRequest request, ServerCallContext context)
     {
         var userId = context.GetUserIdentity();

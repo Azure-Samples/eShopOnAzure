@@ -1,4 +1,6 @@
-﻿var builder = WebApplication.CreateBuilder(args);
+﻿using Microsoft.Identity.Web;
+
+var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
 builder.AddDefaultOpenApi();
@@ -13,6 +15,7 @@ app.MapDefaultEndpoints();
 app.MapGroup("/api/v1/webhooks")
    .WithTags("WebHooks API")
    .MapWebhooksApi()
-   .RequireAuthorization();
+   .RequireAuthorization()
+   .RequireScope("webhooks");
 
 app.Run();
