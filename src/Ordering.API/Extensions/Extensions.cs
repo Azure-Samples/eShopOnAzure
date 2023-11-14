@@ -22,9 +22,6 @@ internal static class Extensions
         builder.AddServiceBusEventBus("EventBus")
                .AddEventBusSubscriptions();
 
-        builder.Services.AddOptions<OrderingOptions>()
-                .BindConfiguration(nameof(OrderingOptions));
-
         builder.Services.AddHttpContextAccessor();
         builder.Services.AddTransient<IIdentityService, IdentityService>();
 
