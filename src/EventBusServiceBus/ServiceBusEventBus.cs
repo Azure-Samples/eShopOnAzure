@@ -234,22 +234,9 @@ public sealed class ServiceBusEventBus(
         // Deserialize the event
         var integrationEvent = JsonSerializer.Deserialize(message, eventType, s_caseInsensitiveOptions) as IntegrationEvent;
 
-        _subscriptionInfo.HandlerTypes.TryGetValue(eventType, out var handlerTypes);
-        handlerTypes ??= [];
-
-        // REVIEW: This could be done in parallel
-        foreach (var handlerType in handlerTypes)
+        foreach (var handler in scope.ServiceProvider.GetKeyedServices<IIntegrationEventHandler>(eventType))
         {
-            var handler = scope.ServiceProvider.GetRequiredService(handlerType) as IIntegrationEventHandler;
-
-            if (handler is null)
-            {
-                logger.LogWarning($"Unable to resolve handler {{Handler}} as {nameof(IIntegrationEventHandler)}", handlerType);
-            }
-            else
-            {
-                await handler.Handle(integrationEvent);
-            }
+            await handler.Handle(integrationEvent);
         }
     }
 

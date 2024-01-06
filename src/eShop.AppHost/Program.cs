@@ -30,12 +30,12 @@ var orderingApi = builder.AddProject<Projects.Ordering_API>("ordering-api")
     .WithReference(orderDb)
 	.WithReference(appInsights);
 
-builder.AddProject<Projects.Ordering_BackgroundTasks>("order-processor")
+builder.AddProject<Projects.OrderProcessor>("order-processor")
     .WithReference(serviceBus)
     .WithReference(orderDb)
     .WithReference(appInsights);
 
-builder.AddProject<Projects.Payment_API>("payment-processor")
+builder.AddProject<Projects.PaymentProcessor>("payment-processor")
     .WithReference(serviceBus)
     .WithReference(appInsights);
 
