@@ -15,7 +15,7 @@ public static class AppInsightsBuilderExtensions
 
     static void WriteAppInsightsResourceToManifest(Utf8JsonWriter jsonWriter, string? connectionString)
     {
-        jsonWriter.WriteString("type", "azure.appinsights.v1");
+        jsonWriter.WriteString("type", "azure.appinsights.v0");
         if (!string.IsNullOrEmpty(connectionString))
         {
             jsonWriter.WriteString("connectionString", connectionString);
