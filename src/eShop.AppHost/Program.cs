@@ -63,7 +63,7 @@ var webApp = builder.AddProject<Projects.WebApp>("webapp")
     .WithLaunchProfile("https");
 
 // Wire up the callback urls (self referencing)
-webApp.WithEnvironmentForServiceBinding("CallBackUrl", webApp, bindingName: "https");
-webhooksClient.WithEnvironmentForServiceBinding("CallBackUrl", webhooksClient);
+webApp.WithEnvironment("CallBackUrl", webApp.GetEndpoint("https"));
+webhooksClient.WithEnvironment("CallBackUrl", webhooksClient.GetEndpoint("https"));
 
 builder.Build().Run();

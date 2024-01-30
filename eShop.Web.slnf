@@ -7,7 +7,6 @@
       "src\\Catalog.API\\Catalog.API.csproj",
       "src\\EventBusServiceBus\\EventBusServiceBus.csproj",
       "src\\EventBus\\EventBus.csproj",
-      "src\\Identity.API\\Identity.API.csproj",
       "src\\IntegrationEventLogEF\\IntegrationEventLogEF.csproj",
       "src\\Mobile.Bff.Shopping\\Mobile.Bff.Shopping.csproj",
       "src\\Ordering.API\\Ordering.API.csproj",
