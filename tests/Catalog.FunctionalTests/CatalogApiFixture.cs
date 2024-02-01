@@ -1,5 +1,8 @@
-﻿using System.Reflection;
+﻿using Azure.Messaging.ServiceBus;
+using Azure.Messaging.ServiceBus.Administration;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Extensions.DependencyInjection;
+using NSubstitute;
 
 namespace eShop.Catalog.FunctionalTests;
 
@@ -24,6 +27,12 @@ public sealed class CatalogApiFixture : WebApplicationFactory<Program>, IAsyncLi
 
     protected override IHost CreateHost(IHostBuilder builder)
     {
+        builder.ConfigureServices(services =>
+        {
+            services.AddSingleton(Substitute.For<ServiceBusClient>());
+            services.AddSingleton(Substitute.For<ServiceBusAdministrationClient>());
+        });
+
         builder.ConfigureHostConfiguration(config =>
         {
             config.AddInMemoryCollection(new Dictionary<string, string>

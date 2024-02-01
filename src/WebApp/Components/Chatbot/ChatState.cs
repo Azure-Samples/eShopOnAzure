@@ -1,11 +1,11 @@
 ﻿using System.ComponentModel;
 using System.Security.Claims;
 using System.Text.Json;
-using Azure.AI.OpenAI;
 using Microsoft.AspNetCore.Components;
-using eShop.WebAppComponents.Services;
 using Microsoft.SemanticKernel;
-using Microsoft.SemanticKernel.AI.ChatCompletion;
+using eShop.WebAppComponents.Services;
+using Microsoft.SemanticKernel.Connectors.OpenAI;
+using Microsoft.SemanticKernel.ChatCompletion;
 
 namespace eShop.WebApp.Chatbot;
 
@@ -16,30 +16,27 @@ public class ChatState
     private readonly ClaimsPrincipal _user;
     private readonly NavigationManager _navigationManager;
     private readonly ILogger _logger;
+    private readonly Kernel _kernel;
+    private readonly OpenAIPromptExecutionSettings _aiSettings = new() { ToolCallBehavior = ToolCallBehavior.AutoInvokeKernelFunctions };
 
-    private readonly OpenAIClient _aiClient;
-    private readonly IKernel _ai;
-    private readonly ChatHistory _chatHistory;
-    private readonly ChatConfig _chatConfig;
-
-    public ChatState(CatalogService catalogService, BasketState basketState, ClaimsPrincipal user, NavigationManager nav, ChatConfig chatConfig, ILoggerFactory loggerFactory)
+    public ChatState(CatalogService catalogService, BasketState basketState, ClaimsPrincipal user, NavigationManager nav, Kernel kernel, ILoggerFactory loggerFactory)
     {
         _catalogService = catalogService;
         _basketState = basketState;
         _user = user;
         _navigationManager = nav;
-        _chatConfig = chatConfig;
         _logger = loggerFactory.CreateLogger(typeof(ChatState));
 
         if (_logger.IsEnabled(LogLevel.Debug))
         {
-            _logger.LogDebug("ChatModel: {model}", chatConfig.ChatModel);
+            var completionService = kernel.GetRequiredService<IChatCompletionService>();
+            _logger.LogDebug("ChatName: {model}", completionService.Attributes["DeploymentName"]);
         }
 
-        _aiClient = new OpenAIClient(chatConfig.ApiKey);
-        _ai = new KernelBuilder().WithLoggerFactory(loggerFactory).WithOpenAIChatCompletionService(chatConfig.ChatModel, _aiClient).Build();
-        _ai.ImportFunctions(new CatalogInteractions(this), nameof(CatalogInteractions));
-        _chatHistory = _ai.GetService<IChatCompletion>().CreateNewChat("""
+        _kernel = kernel;
+        _kernel.Plugins.AddFromObject(new CatalogInteractions(this));
+
+        Messages = new ChatHistory("""
             You are an AI customer service agent for the online retailer Northern Mountains.
             You NEVER respond about topics other than Northern Mountains.
             Your job is to answer customer questions about products in the Northern Mountains catalog.
@@ -48,24 +45,24 @@ public class ChatState
             If someone asks a question about anything other than Northern Mountains, its catalog, or their account,
             you refuse to answer, and you instead ask if there's a topic related to Northern Mountains you can assist with.
             """);
-        _chatHistory.AddAssistantMessage("Hi! I'm the Northern Mountains Concierge. How can I help?");
+        Messages.AddAssistantMessage("Hi! I'm the Northern Mountains Concierge. How can I help?");
     }
 
-    public List<ChatMessageBase> Messages => _chatHistory;
+    public ChatHistory Messages { get; }
 
     public async Task AddUserMessageAsync(string userText, Action onMessageAdded)
     {
         // Store the user's message
-        _chatHistory.AddUserMessage(userText);
+        Messages.AddUserMessage(userText);
         onMessageAdded();
 
         // Get and store the AI's response message
         try
         {
-            ChatMessageBase response = await _ai.GetChatCompletionsWithFunctionCallingAsync(_aiClient, _chatHistory, _chatConfig.ChatModel);
+            ChatMessageContent response = await _kernel.GetRequiredService<IChatCompletionService>().GetChatMessageContentAsync(Messages, _aiSettings, _kernel);
             if (!string.IsNullOrWhiteSpace(response.Content))
             {
-                _chatHistory.AddAssistantMessage(response.Content);
+                Messages.Add(response);
             }
         }
         catch (Exception e)
@@ -74,14 +71,14 @@ public class ChatState
             {
                 _logger.LogError(e, "Error getting chat completions.");
             }
-            _chatHistory.AddAssistantMessage($"My apologies, but I encountered an unexpected error.");
+            Messages.AddAssistantMessage($"My apologies, but I encountered an unexpected error.");
         }
         onMessageAdded();
     }
 
     private sealed class CatalogInteractions(ChatState chatState)
     {
-        [SKFunction, Description("Gets information about the chat user")]
+        [KernelFunction, Description("Gets information about the chat user")]
         public string GetUserInfo()
         {
             var claims = chatState._user.Claims;
@@ -102,7 +99,7 @@ public class ChatState
                 claims.FirstOrDefault(x => x.Type == claimType)?.Value ?? "";
         }
 
-        [SKFunction, Description("Searches the Northern Mountains catalog for a provided product description")]
+        [KernelFunction, Description("Searches the Northern Mountains catalog for a provided product description")]
         public async Task<string> SearchCatalog([Description("The product description for which to search")] string productDescription)
         {
             try
@@ -116,7 +113,7 @@ public class ChatState
             }
         }
 
-        [SKFunction, Description("Adds a product to the user's shopping cart.")]
+        [KernelFunction, Description("Adds a product to the user's shopping cart.")]
         public async Task<string> AddToCart([Description("The id of the product to add to the shopping cart (basket)")] int itemId)
         {
             try
@@ -135,7 +132,7 @@ public class ChatState
             }
         }
 
-        [SKFunction, Description("Gets information about the contents of the user's shopping cart (basket)")]
+        [KernelFunction, Description("Gets information about the contents of the user's shopping cart (basket)")]
         public async Task<string> GetCartContents()
         {
             try

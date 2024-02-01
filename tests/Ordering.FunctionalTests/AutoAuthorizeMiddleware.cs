@@ -1,4 +1,6 @@
-﻿namespace eShop.Ordering.FunctionalTests;
+﻿using Microsoft.Identity.Web;
+
+namespace eShop.Ordering.FunctionalTests;
 
 class AutoAuthorizeMiddleware
 {
@@ -18,6 +20,7 @@ class AutoAuthorizeMiddleware
         identity.AddClaim(new Claim("sub", IDENTITY_ID));
         identity.AddClaim(new Claim("unique_name", IDENTITY_ID));
         identity.AddClaim(new Claim(ClaimTypes.Name, IDENTITY_ID));
+        identity.AddClaim(new Claim(ClaimConstants.Scope, "orders"));
 
         httpContext.User.AddIdentity(identity);
 

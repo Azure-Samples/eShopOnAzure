@@ -9,8 +9,8 @@ public static class AppInsightsBuilderExtensions
     {
         var appInsights = new ApplicationInsightsResource(name, connectionString);
         return builder.AddResource(appInsights)
-                        .WithAnnotation(new ManifestPublishingCallbackAnnotation(jsonWriter =>
-                        WriteAppInsightsResourceToManifest(jsonWriter, appInsights.GetConnectionString())));
+                        .WithAnnotation(new ManifestPublishingCallbackAnnotation(context =>
+                        WriteAppInsightsResourceToManifest(context.Writer, appInsights.GetConnectionString())));
     }
 
     static void WriteAppInsightsResourceToManifest(Utf8JsonWriter jsonWriter, string? connectionString)

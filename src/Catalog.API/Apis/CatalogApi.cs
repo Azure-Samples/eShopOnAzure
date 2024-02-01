@@ -117,8 +117,9 @@ public static class CatalogApi
 
         string imageFileExtension = Path.GetExtension(item.PictureFileName);
         string mimetype = GetImageMimeTypeFromImageFileExtension(imageFileExtension);
+        DateTime lastModified = File.GetLastWriteTimeUtc(path);
 
-        return TypedResults.PhysicalFile(path, mimetype);
+        return TypedResults.PhysicalFile(path, mimetype, lastModified: lastModified);
     }
 
     public static async Task<Results<BadRequest<string>, RedirectToRouteHttpResult, Ok<PaginatedItems<CatalogItem>>>> GetItemsBySemanticRelevance(
@@ -262,25 +263,30 @@ public static class CatalogApi
         return TypedResults.Created($"/api/v1/catalog/items/{productToUpdate.Id}");
     }
 
-    public static async Task<CreatedAtRoute<CatalogItem>> CreateItem(
+    public static async Task<Created> CreateItem(
         [AsParameters] CatalogServices services,
         CatalogItem product)
     {
         var item = new CatalogItem
         {
+            Id = product.Id,
             CatalogBrandId = product.CatalogBrandId,
             CatalogTypeId = product.CatalogTypeId,
             Description = product.Description,
             Name = product.Name,
             PictureFileName = product.PictureFileName,
-            Price = product.Price
+            PictureUri = product.PictureUri,
+            Price = product.Price,
+            AvailableStock = product.AvailableStock,
+            RestockThreshold = product.RestockThreshold,
+            MaxStockThreshold = product.MaxStockThreshold
         };
         item.Embedding = await services.CatalogAI.GetEmbeddingAsync(item);
 
         services.Context.CatalogItems.Add(item);
         await services.Context.SaveChangesAsync();
 
-        return TypedResults.CreatedAtRoute(item, $"/items/{item.Id}");
+        return TypedResults.Created($"/api/v1/catalog/items/{item.Id}");
     }
 
     public static async Task<Results<NoContent, NotFound>> DeleteItemById(
@@ -319,6 +325,7 @@ public static class CatalogApi
         ".wmf" => "image/wmf",
         ".jp2" => "image/jp2",
         ".svg" => "image/svg+xml",
+        ".webp" => "image/webp",
         _ => "application/octet-stream",
     };
 

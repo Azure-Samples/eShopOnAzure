@@ -30,12 +30,12 @@ var orderingApi = builder.AddProject<Projects.Ordering_API>("ordering-api")
     .WithReference(orderDb)
 	.WithReference(appInsights);
 
-builder.AddProject<Projects.Ordering_BackgroundTasks>("order-processor")
+builder.AddProject<Projects.OrderProcessor>("order-processor")
     .WithReference(serviceBus)
     .WithReference(orderDb)
     .WithReference(appInsights);
 
-builder.AddProject<Projects.Payment_API>("payment-processor")
+builder.AddProject<Projects.PaymentProcessor>("payment-processor")
     .WithReference(serviceBus)
     .WithReference(appInsights);
 
@@ -63,7 +63,7 @@ var webApp = builder.AddProject<Projects.WebApp>("webapp")
     .WithLaunchProfile("https");
 
 // Wire up the callback urls (self referencing)
-webApp.WithEnvironmentForServiceBinding("CallBackUrl", webApp, bindingName: "https");
-webhooksClient.WithEnvironmentForServiceBinding("CallBackUrl", webhooksClient);
+webApp.WithEnvironment("CallBackUrl", webApp.GetEndpoint("https"));
+webhooksClient.WithEnvironment("CallBackUrl", webhooksClient.GetEndpoint("https"));
 
 builder.Build().Run();

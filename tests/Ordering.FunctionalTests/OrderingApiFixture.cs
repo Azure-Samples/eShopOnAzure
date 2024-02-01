@@ -1,5 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc.Testing;
+﻿using Azure.Messaging.ServiceBus;
+using Azure.Messaging.ServiceBus.Administration;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Hosting;
+using NSubstitute;
 
 namespace eShop.Ordering.FunctionalTests;
 
@@ -31,6 +35,22 @@ public sealed class OrderingApiFixture : WebApplicationFactory<Program>, IAsyncL
         builder.ConfigureServices(services =>
         {
             services.AddSingleton<IStartupFilter>(new AutoAuthorizeStartupFilter());
+
+            var sbClient = Substitute.For<ServiceBusClient>();
+            sbClient.CreateProcessor(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ServiceBusProcessorOptions>()).Returns(Substitute.For<ServiceBusProcessor>());
+
+            services.AddSingleton(sbClient);
+            services.AddSingleton(Substitute.For<ServiceBusAdministrationClient>());
+
+            services.PostConfigure<JwtBearerOptions>("Bearer", o =>
+            {
+                o.Events.OnMessageReceived = m =>
+                {
+                    m.Principal = m.HttpContext.User;
+                    m.Success();
+                    return Task.CompletedTask;
+                };
+            });
         });
         return base.CreateHost(builder);
     }
