@@ -2,7 +2,6 @@
   "solution": {
     "path": "eShop.sln",
     "projects": [
-      "src\\AzureServices\\AzureServices.csproj",
       "src\\Basket.API\\Basket.API.csproj",
       "src\\Catalog.API\\Catalog.API.csproj",
       "src\\EventBusServiceBus\\EventBusServiceBus.csproj",
