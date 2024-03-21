@@ -10,5 +10,5 @@ updates:
       - public-nuget
     schedule:
       interval: weekly
-    open-pull-requests-limit: 15      
+    open-pull-requests-limit: 15
 
