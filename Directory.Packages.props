@@ -10,76 +10,92 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- Version together with Aspire -->
-    <PackageVersion Include="Aspire.Azure.Messaging.ServiceBus" Version="$(AspireVersion)" />
-    <PackageVersion Include="Aspire.Hosting" Version="$(AspireVersion)" />
-    <PackageVersion Include="Aspire.Hosting.Azure" Version="$(AspireVersion)" />
-    <PackageVersion Include="Aspire.Npgsql" Version="$(AspireVersion)" />
-    <PackageVersion Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" Version="$(AspireVersion)" />
-    <PackageVersion Include="Aspire.StackExchange.Redis" Version="$(AspireVersion)" />
-    <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery" Version="$(AspireVersion)" />
-    <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery.Yarp" Version="$(AspireVersion)" />
+    <PackageVersion Include="Aspire.Azure.Messaging.ServiceBus" Version="$(AspireVersion)"/>
+    <PackageVersion Include="Aspire.Hosting" Version="$(AspireVersion)"/>
+    <PackageVersion Include="Aspire.Hosting.Azure" Version="$(AspireVersion)"/>
+    <PackageVersion Include="Aspire.Npgsql" Version="$(AspireVersion)"/>
+    <PackageVersion Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" Version="$(AspireVersion)"/>
+    <PackageVersion Include="Aspire.StackExchange.Redis" Version="$(AspireVersion)"/>
+    <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery" Version="$(AspireVersion)"/>
+    <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery.Yarp" Version="$(AspireVersion)"/>
     <!-- Version together with ASP.NET -->
-    <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="$(AspnetVersion)" />
-    <PackageVersion Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="$(AspnetVersion)" />
-    <PackageVersion Include="Microsoft.AspNetCore.Components.QuickGrid" Version="$(AspnetVersion)" />
-    <PackageVersion Include="Microsoft.AspNetCore.Components.Web" Version="$(AspnetVersion)" />
-    <PackageVersion Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="$(AspnetVersion)" />
-    <PackageVersion Include="Microsoft.AspNetCore.Identity.UI" Version="$(AspnetVersion)" />
-    <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="$(AspnetVersion)" />
-    <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="$(AspnetVersion)" />
-    <PackageVersion Include="Microsoft.AspNetCore.TestHost" Version="$(AspnetVersion)" />
-    <PackageVersion Include="Microsoft.Extensions.Identity.Stores" Version="$(AspnetVersion)" />
-    <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="$(MicrosoftExtensionsVersion)" />
+    <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="$(AspnetVersion)"/>
+    <PackageVersion Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="$(AspnetVersion)"/>
+    <PackageVersion Include="Microsoft.AspNetCore.Components.QuickGrid" Version="$(AspnetVersion)"/>
+    <PackageVersion Include="Microsoft.AspNetCore.Components.Web" Version="$(AspnetVersion)"/>
+    <PackageVersion Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="$(AspnetVersion)"/>
+    <PackageVersion Include="Microsoft.AspNetCore.Identity.UI" Version="$(AspnetVersion)"/>
+    <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="$(AspnetVersion)"/>
+    <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="$(AspnetVersion)"/>
+    <PackageVersion Include="Microsoft.AspNetCore.TestHost" Version="$(AspnetVersion)"/>
+    <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="$(MicrosoftExtensionsVersion)"/>
+    <PackageVersion Include="Microsoft.Extensions.Identity.Stores" Version="$(AspnetVersion)"/>
     <!-- Version together with EF -->
-    <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.2" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="$(EfVersion)" />
-    <PackageVersion Include="NSubstitute" Version="5.1.0" />
-    <PackageVersion Include="NSubstitute.Analyzers.CSharp" Version="1.0.15" />
-    <PackageVersion Include="Pgvector" Version="0.2.0" />
-    <PackageVersion Include="Pgvector.EntityFrameworkCore" Version="0.2.0" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="$(EfVersion)"/>
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Abstractions" Version="$(EfVersion)"/>
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="$(EfVersion)"/>
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="$(EfVersion)"/>
+    <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.2"/>
+    <PackageVersion Include="NSubstitute" Version="5.1.0"/>
+    <PackageVersion Include="NSubstitute.Analyzers.CSharp" Version="1.0.15"/>
+    <PackageVersion Include="Pgvector" Version="0.2.0"/>
+    <PackageVersion Include="Pgvector.EntityFrameworkCore" Version="0.2.0"/>
     <!-- Version independently -->
-    <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0" />
-    <PackageVersion Include="Microsoft.Extensions.Options" Version="8.0.2" />
-    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.1" />
+    <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0"/>
+    <PackageVersion Include="Microsoft.Extensions.Options" Version="8.0.2"/>
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.1"/>
+    <PackageVersion Include="Microsoft.Extensions.Http" Version="8.0.0"/>
+    <PackageVersion Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0"/>
     <!-- Xabaril packages -->
-    <PackageVersion Include="AspNetCore.HealthChecks.NpgSql" Version="8.0.0" />
-    <PackageVersion Include="AspNetCore.HealthChecks.UI" Version="7.0.2" />
-    <PackageVersion Include="AspNetCore.HealthChecks.UI.Client" Version="7.1.0" />
-    <PackageVersion Include="AspNetCore.HealthChecks.UI.InMemory.Storage" Version="7.0.0" />
-    <PackageVersion Include="AspNetCore.HealthChecks.Uris" Version="7.0.0" />
+    <PackageVersion Include="AspNetCore.HealthChecks.NpgSql" Version="8.0.0"/>
+    <PackageVersion Include="AspNetCore.HealthChecks.UI" Version="7.0.2"/>
+    <PackageVersion Include="AspNetCore.HealthChecks.UI.Client" Version="7.1.0"/>
+    <PackageVersion Include="AspNetCore.HealthChecks.UI.InMemory.Storage" Version="7.0.0"/>
+    <PackageVersion Include="AspNetCore.HealthChecks.Uris" Version="7.0.0"/>
     <!-- AI -->
-    <PackageVersion Include="Azure.AI.OpenAI" Version="1.0.0-beta.12" />
-    <PackageVersion Include="Microsoft.SemanticKernel" Version="1.0.1" />
+    <PackageVersion Include="Azure.AI.OpenAI" Version="1.0.0-beta.12"/>
+    <PackageVersion Include="Microsoft.SemanticKernel" Version="1.0.1"/>
     <!-- Open Telemetry -->
-    <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.7.0" />
-    <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.7.0" />
-    <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.7.1" />
-    <PackageVersion Include="OpenTelemetry.Instrumentation.GrpcNetClient" Version="1.6.0-beta.3" />
-    <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.7.1" />
-    <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.7.0" />
+    <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.7.0"/>
+    <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.7.0"/>
+    <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.7.1"/>
+    <PackageVersion Include="OpenTelemetry.Instrumentation.GrpcNetClient" Version="1.6.0-beta.3"/>
+    <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.7.1"/>
+    <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.7.0"/>
     <!-- VS Test -->
-    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.7.2" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.7.2"/>
     <!-- Scaffolding -->
-    <PackageVersion Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.0-rc.1.23461.3" />
+    <PackageVersion Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.0-rc.1.23461.3"/>
     <!-- Grpc -->
-    <PackageVersion Include="Grpc.AspNetCore" Version="$(GrpcVersion)" />
-    <PackageVersion Include="Grpc.AspNetCore.Server.ClientFactory" Version="$(GrpcVersion)" />
-    <PackageVersion Include="Grpc.Tools" Version="$(GrpcVersion)" PrivateAssets="All" />
+    <PackageVersion Include="Grpc.AspNetCore" Version="$(GrpcVersion)"/>
+    <PackageVersion Include="Grpc.AspNetCore.Server.ClientFactory" Version="$(GrpcVersion)"/>
+    <PackageVersion Include="Grpc.Tools" PrivateAssets="All" Version="$(GrpcVersion)"/>
     <!-- Azure -->
-    <PackageVersion Include="AspNetCore.HealthChecks.AzureServiceBus" Version="8.0.0" />
-    <PackageVersion Include="Azure.Monitor.OpenTelemetry.AspNetCore" Version="1.0.0-beta.8" />
-    <PackageVersion Include="Microsoft.Identity.Web" Version="2.15.3" />
+    <PackageVersion Include="AspNetCore.HealthChecks.AzureServiceBus" Version="8.0.0"/>
+    <PackageVersion Include="Azure.Monitor.OpenTelemetry.AspNetCore" Version="1.0.0-beta.8"/>
+    <PackageVersion Include="Microsoft.Identity.Web" Version="2.15.3"/>
     <!-- Miscellaneous -->
-    <PackageVersion Include="Automapper" Version="12.0.1" />
-    <PackageVersion Include="Dapper" Version="2.0.151" />
-    <PackageVersion Include="FluentValidation.AspNetCore" Version="11.3.0" />
-    <PackageVersion Include="MediatR" Version="12.2.0" />
-    <PackageVersion Include="Microsoft.Web.LibraryManager.Build" Version="2.1.175" />
-    <PackageVersion Include="Polly" Version="8.0.0" />
-    <PackageVersion Include="Swashbuckle.AspNetCore" Version="6.5.0" />
-    <PackageVersion Include="System.Reflection.TypeExtensions" Version="4.7.0" />
-    <PackageVersion Include="xunit" Version="2.5.1" />
-    <PackageVersion Include="xunit.runner.visualstudio" Version="2.5.1" />
-    <PackageVersion Include="Yarp.ReverseProxy" Version="2.1.0" />
+    <PackageVersion Include="Automapper" Version="12.0.1"/>
+    <PackageVersion Include="Dapper" Version="2.0.151"/>
+    <PackageVersion Include="FluentValidation.AspNetCore" Version="11.3.0"/>
+    <PackageVersion Include="IdentityModel" Version="6.2.0"/>
+    <PackageVersion Include="MediatR" Version="12.2.0"/>
+    <PackageVersion Include="Microsoft.Web.LibraryManager.Build" Version="2.1.175"/>
+    <PackageVersion Include="PCLCrypto" Version="2.1.40-alpha"/>
+    <PackageVersion Include="Polly" Version="8.0.0"/>
+    <PackageVersion Include="Swashbuckle.AspNetCore" Version="6.5.0"/>
+    <PackageVersion Include="System.Reflection.TypeExtensions" Version="4.7.0"/>
+    <PackageVersion Include="Yarp.ReverseProxy" Version="2.1.0"/>
+    <!-- Maui -->
+    <PackageVersion Include="CommunityToolkit.Maui" Version="5.3.0"/>
+    <PackageVersion Include="CommunityToolkit.Mvvm" Version="8.2.1"/>
+    <PackageVersion Include="Microsoft.AspNetCore.Components.WebView.Maui" Version="$(MauiVersion)"/>
+    <PackageVersion Include="Microsoft.Maui.Controls" Version="$(MauiVersion)"/>
+    <PackageVersion Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)"/>
+    <PackageVersion Include="Microsoft.Maui.Controls.Maps" Version="$(MauiVersion)"/>
+    <!-- Testing -->
+    <PackageVersion Include="coverlet.collector" Version="3.2.0"/>
+    <PackageVersion Include="xunit" Version="2.5.3"/>
+    <PackageVersion Include="xunit.runner.visualstudio" Version="2.5.1"/>
   </ItemGroup>
 </Project>
