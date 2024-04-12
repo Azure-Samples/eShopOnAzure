@@ -10,18 +10,16 @@ public sealed class CatalogApiFixture : WebApplicationFactory<Program>, IAsyncLi
 {
     private readonly IHost _app;
 
-    public IResourceBuilder<PostgresContainerResource> Postgres { get; private set; }
+    public IResourceBuilder<PostgresServerResource> Postgres { get; private set; }
+    private string _postgresConnectionString;
 
     public CatalogApiFixture()
     {
         var options = new DistributedApplicationOptions { AssemblyName = typeof(CatalogApiFixture).Assembly.FullName, DisableDashboard = true };
         var appBuilder = DistributedApplication.CreateBuilder(options);
-        Postgres = appBuilder.AddPostgresContainer("CatalogDB")
-            .WithAnnotation(new ContainerImageAnnotation
-            {
-                Image = "ankane/pgvector",
-                Tag = "latest"
-            });
+        Postgres = appBuilder.AddPostgres("CatalogDB")
+            .WithImage("ankane/pgvector")
+            .WithImageTag("latest");
         _app = appBuilder.Build();
     }
 
@@ -37,7 +35,7 @@ public sealed class CatalogApiFixture : WebApplicationFactory<Program>, IAsyncLi
         {
             config.AddInMemoryCollection(new Dictionary<string, string>
             {
-                { $"ConnectionStrings:{Postgres.Resource.Name}", Postgres.Resource.GetConnectionString() },
+                { $"ConnectionStrings:{Postgres.Resource.Name}", _postgresConnectionString },
                 });
         });
         return base.CreateHost(builder);
@@ -60,5 +58,6 @@ public sealed class CatalogApiFixture : WebApplicationFactory<Program>, IAsyncLi
     public async Task InitializeAsync()
     {
         await _app.StartAsync();
+        _postgresConnectionString = await Postgres.Resource.GetConnectionStringAsync();
     }
 }

@@ -8,10 +8,10 @@ public static class Extensions
 {
     public static void AddApplicationServices(this IHostApplicationBuilder builder)
     {
-        builder.AddServiceBusEventBus("EventBus")
+        builder.AddServiceBusEventBus("eventBus")
                .ConfigureJsonOptions(options => options.TypeInfoResolverChain.Add(IntegrationEventContext.Default));
 
-        builder.AddNpgsqlDataSource("OrderingDB");
+        builder.AddNpgsqlDataSource("orderingdb");
 
         builder.Services.AddOptions<BackgroundTaskOptions>()
             .BindConfiguration(nameof(BackgroundTaskOptions));

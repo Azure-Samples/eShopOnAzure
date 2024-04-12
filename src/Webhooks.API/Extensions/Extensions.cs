@@ -6,10 +6,10 @@ internal static class Extensions
     {
         builder.AddDefaultAuthentication();
 
-        builder.AddServiceBusEventBus("EventBus")
+        builder.AddServiceBusEventBus("eventBus")
                .AddEventBusSubscriptions();
 
-        builder.AddNpgsqlDbContext<WebhooksContext>("WebHooksDB");
+        builder.AddNpgsqlDbContext<WebhooksContext>("webhooksdb");
 
         builder.Services.AddMigration<WebhooksContext>();
 

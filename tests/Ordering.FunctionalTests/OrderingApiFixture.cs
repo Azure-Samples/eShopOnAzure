@@ -11,15 +11,17 @@ public sealed class OrderingApiFixture : WebApplicationFactory<Program>, IAsyncL
 {
     private readonly IHost _app;
 
-    public IResourceBuilder<PostgresContainerResource> Postgres { get; private set; }
-    public IResourceBuilder<PostgresContainerResource> IdentityDB { get; private set; }
+    public IResourceBuilder<PostgresServerResource> Postgres { get; private set; }
+    public IResourceBuilder<PostgresServerResource> IdentityDB { get; private set; }
+
+    private string _postgresConnectionString;
 
     public OrderingApiFixture()
     {
         var options = new DistributedApplicationOptions { AssemblyName = typeof(OrderingApiFixture).Assembly.FullName, DisableDashboard = true };
         var appBuilder = DistributedApplication.CreateBuilder(options);
-        Postgres = appBuilder.AddPostgresContainer("OrderingDB");
-        IdentityDB = appBuilder.AddPostgresContainer("IdentityDB");
+        Postgres = appBuilder.AddPostgres("OrderingDB");
+        IdentityDB = appBuilder.AddPostgres("IdentityDB");
         _app = appBuilder.Build();
     }
 
@@ -29,7 +31,7 @@ public sealed class OrderingApiFixture : WebApplicationFactory<Program>, IAsyncL
         {
             config.AddInMemoryCollection(new Dictionary<string, string>
             {
-                { $"ConnectionStrings:{Postgres.Resource.Name}", Postgres.Resource.GetConnectionString() },
+                { $"ConnectionStrings:{Postgres.Resource.Name}", _postgresConnectionString }
             });
         });
         builder.ConfigureServices(services =>
@@ -72,6 +74,7 @@ public sealed class OrderingApiFixture : WebApplicationFactory<Program>, IAsyncL
     public async Task InitializeAsync()
     {
         await _app.StartAsync();
+        _postgresConnectionString = await Postgres.Resource.GetConnectionStringAsync();
     }
 
     private class AutoAuthorizeStartupFilter : IStartupFilter

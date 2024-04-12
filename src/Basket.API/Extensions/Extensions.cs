@@ -12,11 +12,11 @@ public static class Extensions
     {
         builder.AddDefaultAuthentication();
 
-        builder.AddRedis("redis");
+        builder.AddRedisClient("redis");
 
         builder.Services.AddSingleton<IBasketRepository, RedisBasketRepository>();
 
-        builder.AddServiceBusEventBus("EventBus")
+        builder.AddServiceBusEventBus("eventBus")
                .AddSubscription<OrderStartedIntegrationEvent, OrderStartedIntegrationEventHandler>()
                .ConfigureJsonOptions(options => options.TypeInfoResolverChain.Add(IntegrationEventContext.Default));
     }
