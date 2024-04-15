@@ -93,15 +93,9 @@ public static partial class Extensions
             builder.Services.ConfigureOpenTelemetryTracerProvider(tracing => tracing.AddOtlpExporter());
         }
 
-        if (builder.Configuration.GetConnectionString("AppInsights") is string connectionString)
+        if (!string.IsNullOrEmpty(builder.Configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]))
         {
-            if (!string.IsNullOrEmpty(connectionString))
-            {
-                openTelemetry.UseAzureMonitor(o =>
-                {
-                    o.ConnectionString = connectionString;
-                });
-            }
+            builder.Services.AddOpenTelemetry().UseAzureMonitor();
         }
 
         return builder;

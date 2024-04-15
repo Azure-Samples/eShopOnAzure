@@ -1,13 +1,22 @@
-﻿using eShop.AppHost;
+﻿
+using Aspire.Hosting;
+using eShop.AppHost;
 using Microsoft.Extensions.Configuration;
 
 var builder = DistributedApplication.CreateBuilder(args);
 
 builder.AddForwardedHeaders();
 
-var appInsights = builder.AddApplicationInsights("appInsights");
+var appInsights = builder.ExecutionContext.IsPublishMode
+    ? builder.AddAzureApplicationInsights("appInsights")
+    : builder.AddConnectionString("appInsights", "APPLICATIONINSIGHTS_CONNECTION_STRING");
+
 var redis = builder.AddRedis("redis");
-var serviceBus = builder.AddAzureServiceBus("eventBus", topicNames: ["eshop_event_bus"]);
+
+var serviceBus = builder.ExecutionContext.IsPublishMode
+    ? builder.AddAzureServiceBus("eventBus").AddTopic("eshop_event_bus")
+    : builder.AddConnectionString("eventBus");
+
 var postgres = builder.AddPostgres("postgres")
     .WithImage("ankane/pgvector")
     .WithImageTag("latest");
@@ -66,8 +75,7 @@ var webApp = builder.AddProject<Projects.WebApp>("webapp", launchProfileName)
     .WithReference(catalogApi)
     .WithReference(orderingApi)
     .WithReference(serviceBus)
-	.WithReference(appInsights)
-    .WithLaunchProfile("https");
+    .WithReference(appInsights);
 
 // set to true if you want to use OpenAI
 bool useOpenAI = false;

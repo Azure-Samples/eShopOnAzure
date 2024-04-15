@@ -20,7 +20,7 @@ public static class ServiceBusDependencyInjectionExtensions
     {
         ArgumentNullException.ThrowIfNull(builder);
 
-        builder.AddAzureServiceBus(connectionName, o =>
+        builder.AddAzureServiceBusClient(connectionName, o =>
         {
             o.Tracing = true;
             o.HealthCheckTopicName = "eshop_event_bus";
