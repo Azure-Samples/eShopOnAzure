@@ -69,7 +69,7 @@
     <PackageVersion Include="Grpc.AspNetCore.Server.ClientFactory" Version="$(GrpcVersion)" />
     <PackageVersion Include="Grpc.Tools" Version="$(GrpcVersion)" PrivateAssets="All" />
     <!-- Azure -->
-    <PackageVersion Include="AspNetCore.HealthChecks.AzureServiceBus" Version="8.0.0" />
+    <PackageVersion Include="AspNetCore.HealthChecks.AzureServiceBus" Version="8.0.1" />
     <PackageVersion Include="Azure.Monitor.OpenTelemetry.AspNetCore" Version="1.0.0-beta.8" />
     <PackageVersion Include="Microsoft.Identity.Web" Version="2.17.4" />
     <!-- Miscellaneous -->
