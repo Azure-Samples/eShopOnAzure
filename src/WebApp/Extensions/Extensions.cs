@@ -1,13 +1,21 @@
-﻿using eShop.WebApp;
+﻿using System;
+using Azure.AI.OpenAI;
+using eShop.WebApp;
 using eShop.EventBusServiceBus;
 using eShop.WebAppComponents.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Identity.Web;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.SemanticKernel;
+using Microsoft.SemanticKernel.ChatCompletion;
+using Microsoft.SemanticKernel.Connectors.OpenAI;
+using Microsoft.SemanticKernel.TextGeneration;
+using eShop.WebApp.Services.OrderStatus.IntegrationEvents;
+using eShop.Basket.API.Grpc;
 
 public static class Extensions
 {
@@ -73,17 +81,13 @@ public static class Extensions
     private static void AddAIServices(this IHostApplicationBuilder builder)
     {
         var openAIOptions = builder.Configuration.GetSection("AI").Get<AIOptions>()?.OpenAI;
-        if (!string.IsNullOrWhiteSpace(openAIOptions?.ApiKey))
+        var deploymentName = openAIOptions?.ChatModel;
+
+        if (!string.IsNullOrWhiteSpace(builder.Configuration.GetConnectionString("openai")) && !string.IsNullOrWhiteSpace(deploymentName))
         {
-            var kernelBuilder = builder.Services.AddKernel();
-            if (!string.IsNullOrWhiteSpace(openAIOptions.Endpoint))
-            {
-                kernelBuilder.AddAzureOpenAIChatCompletion(openAIOptions.ChatModel, openAIOptions.Endpoint, openAIOptions.ApiKey);
-            }
-            else
-            {
-                kernelBuilder.AddOpenAIChatCompletion(openAIOptions.ChatModel, openAIOptions.ApiKey);
-            }
+            builder.Services.AddKernel();
+            builder.AddAzureOpenAIClient("openai");
+            builder.Services.AddAzureOpenAIChatCompletion(deploymentName);
         }
     }
 

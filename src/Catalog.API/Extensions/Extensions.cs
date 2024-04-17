@@ -5,7 +5,7 @@ public static class Extensions
 {
     public static void AddApplicationServices(this IHostApplicationBuilder builder)
     {
-        builder.AddNpgsqlDbContext<CatalogContext>("CatalogDB", configureDbContextOptions: dbContextOptionsBuilder =>
+        builder.AddNpgsqlDbContext<CatalogContext>("catalogdb", configureDbContextOptions: dbContextOptionsBuilder =>
         {
             dbContextOptionsBuilder.UseNpgsql(builder =>
             {
@@ -21,7 +21,7 @@ public static class Extensions
 
         builder.Services.AddTransient<ICatalogIntegrationEventService, CatalogIntegrationEventService>();
 
-        builder.AddServiceBusEventBus("EventBus")
+        builder.AddServiceBusEventBus("eventBus")
                .AddSubscription<OrderStatusChangedToAwaitingValidationIntegrationEvent, OrderStatusChangedToAwaitingValidationIntegrationEventHandler>()
                .AddSubscription<OrderStatusChangedToPaidIntegrationEvent, OrderStatusChangedToPaidIntegrationEventHandler>();
 
@@ -30,6 +30,11 @@ public static class Extensions
 
         builder.Services.AddOptions<AIOptions>()
             .BindConfiguration("AI");
+
+        if (!string.IsNullOrWhiteSpace(builder.Configuration.GetConnectionString("openai")))
+        {
+            builder.AddAzureOpenAIClient("openai");
+        }
 
         builder.Services.AddSingleton<ICatalogAI, CatalogAI>();
     }
