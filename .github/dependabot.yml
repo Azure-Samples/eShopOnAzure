@@ -12,6 +12,10 @@ updates:
       interval: weekly
     open-pull-requests-limit: 15
     groups:
+      Aspire:
+        patterns:
+          - "Aspire.*"
+          - "Microsoft.Extensions.ServiceDiscovery.*"
       Azure:
         patterns:
           - "Azure.*"
@@ -27,6 +31,7 @@ updates:
       MicrosoftExtensions:
         patterns:
           - "Microsoft.Extensions.*"
+          - "Microsoft.Bcl.*"
       EntityFrameworkCore:
         patterns:
           - "Microsoft.EntityFrameworkCore.*"
@@ -45,3 +50,10 @@ updates:
       Grpc:
         patterns:
           - "Grpc.*"
+      Pgvector:
+        patterns:
+          - "Pgvector.*"
+      Duende:
+        patterns:
+          - "Duende.*"
+
