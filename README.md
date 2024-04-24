@@ -10,7 +10,7 @@ A reference .NET application implementing an eCommerce web site using a services
 
 ### Prerequisites
 
-- Clone the eShop repository: https://github.com/dotnet/eshopOnAzure
+- Clone the eShop repository: https://github.com/Azure-Samples/eshopOnAzure
 - (Windows only) Install Visual Studio. Visual Studio contains tooling support for .NET Aspire that you will want to have. [Visual Studio 2022 version 17.10 Preview](https://visualstudio.microsoft.com/vs/preview/).
   - During installation, ensure that the following are selected:
     - `ASP.NET and web development` workload.
