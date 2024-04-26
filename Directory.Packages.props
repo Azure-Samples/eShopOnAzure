@@ -71,7 +71,7 @@
     <!-- Azure -->
     <PackageVersion Include="AspNetCore.HealthChecks.AzureServiceBus" Version="8.0.0" />
     <PackageVersion Include="Azure.Monitor.OpenTelemetry.AspNetCore" Version="1.1.0" />
-    <PackageVersion Include="Microsoft.Identity.Web" Version="2.17.4" />
+    <PackageVersion Include="Microsoft.Identity.Web" Version="2.18.1" />
     <!-- Miscellaneous -->
     <PackageVersion Include="Automapper" Version="13.0.1" />
     <PackageVersion Include="Dapper" Version="2.1.35" />
