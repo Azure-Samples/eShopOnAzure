@@ -1,8 +1,8 @@
 ﻿using System.Globalization;
 
-namespace Store.Checkout.Services;
+namespace eShop.Store.Reviews;
 
-public class Scrubber
+public class ReviewValidation
 {
     internal record LocalizedWord(string Text, CultureInfo Culture);
 

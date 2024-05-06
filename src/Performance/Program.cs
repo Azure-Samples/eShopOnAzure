@@ -1,5 +1,5 @@
-using System.Globalization;
-namespace Store.Checkout.Services;
+﻿using System.Globalization;
+namespace eShop.Store.Reviews;
 
 internal class Program
 {
@@ -7,7 +7,7 @@ internal class Program
     {
       
         var builder = WebApplication.CreateBuilder(args);
-        builder.Services.AddHostedService<BackgroundScrubber>();
+        builder.Services.AddHostedService<BackgroundReviewValidation>();
     
         var app = builder.Build();
 
@@ -19,11 +19,11 @@ internal class Program
                 x = x + Random.Shared.Next(0, 10).ToString();
                 if (i % 50 == 0)
                 {
-                    Scrubber.SanitizeData("Working...", 'X', CultureInfo.CurrentCulture);
+                    ReviewValidation.SanitizeData("Working...", 'X', CultureInfo.CurrentCulture);
                 }
             }
 
-            return Scrubber.SanitizeData($"PI is {x}", 'X', CultureInfo.CurrentCulture);
+            return ReviewValidation.SanitizeData($"PI is {x}", 'X', CultureInfo.CurrentCulture);
         });
 
         app.MapGet("/", () => "Hello World! V2");

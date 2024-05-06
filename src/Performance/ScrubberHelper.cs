@@ -1,5 +1,5 @@
 ﻿using System.Globalization;
-using static Store.Checkout.Services.Scrubber;
+using static eShop.Store.Reviews.ReviewValidation;
 
 internal static class ScrubberHelpers
 {

@@ -1,9 +1,9 @@
 ﻿using System.Diagnostics;
 using System.Globalization;
 
-namespace Store.Checkout.Services;
+namespace eShop.Store.Reviews;
 
-public class BackgroundScrubber : BackgroundService
+public class BackgroundReviewValidation : BackgroundService
 {
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
@@ -19,7 +19,7 @@ public class BackgroundScrubber : BackgroundService
                 do
                 {
                     stoppingToken.ThrowIfCancellationRequested();
-                    Scrubber.SanitizeData($"The secret word is {stopwatch.ElapsedMilliseconds}", '*', CultureInfo.InvariantCulture);
+                    ReviewValidation.SanitizeData($"The secret word is {stopwatch.ElapsedMilliseconds}", '*', CultureInfo.InvariantCulture);
                 } while (stopwatch.Elapsed < burnTime);
             }
         }
