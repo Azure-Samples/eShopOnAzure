@@ -96,6 +96,9 @@ public static partial class Extensions
         if (!string.IsNullOrEmpty(builder.Configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]))
         {
             builder.Services.AddOpenTelemetry().UseAzureMonitor();
+            // Add Profiler for Azure Monitor
+            builder.Services.AddApplicationInsightsTelemetry();
+            builder.Services.AddServiceProfiler();
         }
 
         return builder;

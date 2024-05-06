@@ -307,13 +307,13 @@ public static class CatalogApi
        [AsParameters] PaginationRequest paginationRequest,
        [AsParameters] CatalogServices services)
     {
-
+        
         // JANK: Just to simulate a slow query
         for (int i = 0; i < 500; i++)
         {
             GetAllItems(paginationRequest, services);
         }
-        return GetAllItems(paginationRequest, services);
+       return GetAllItems(paginationRequest, services);
     }
     private static string GetImageMimeTypeFromImageFileExtension(string extension) => extension switch
     {
