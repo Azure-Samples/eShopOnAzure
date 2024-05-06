@@ -8,7 +8,7 @@ public static class CatalogApi
     public static IEndpointRouteBuilder MapCatalogApi(this IEndpointRouteBuilder app)
     {
         // Routes for querying catalog items.
-        app.MapGet("/items", GetAllItems);
+        app.MapGet("/items", GetAllCatalogItems);
         app.MapGet("/items/by", GetItemsByIds);
         app.MapGet("/items/{id:int}", GetItemById);
         app.MapGet("/items/by/{name:minlength(1)}", GetItemsByName);
@@ -31,53 +31,57 @@ public static class CatalogApi
         return app;
     }
 
-    public static async Task<Results<Ok<PaginatedItems<CatalogItem>>, BadRequest<string>>> GetAllItems(
+
+    public static Results<Ok<PaginatedItems<CatalogItem>>, BadRequest<string>> GetAllItems(
         [AsParameters] PaginationRequest paginationRequest,
         [AsParameters] CatalogServices services)
     {
         var pageSize = paginationRequest.PageSize;
         var pageIndex = paginationRequest.PageIndex;
 
-        var totalItems = await services.Context.CatalogItems
-            .LongCountAsync();
+        var totalItems = services.Context.CatalogItems
+            .LongCount();
 
-        var itemsOnPage = await services.Context.CatalogItems
-            .OrderBy(c => c.Name)
-            .Skip(pageSize * pageIndex)
-            .Take(pageSize)
-            .ToListAsync();
+        var itemsOnPage = services.Context.CatalogItems
+                .OrderBy(c => c.Name)
+                .Skip(pageSize * pageIndex)
+                .Take(pageSize)
+                .ToList();
 
         return TypedResults.Ok(new PaginatedItems<CatalogItem>(pageIndex, pageSize, totalItems, itemsOnPage));
     }
 
-    public static async Task<Ok<List<CatalogItem>>> GetItemsByIds(
+
+    public static Ok<List<CatalogItem>> GetItemsByIds(
         [AsParameters] CatalogServices services,
         int[] ids)
     {
-        var items = await services.Context.CatalogItems.Where(item => ids.Contains(item.Id)).ToListAsync();
+        var items = services.Context.CatalogItems.Where(item => ids.Contains(item.Id)).ToList();
         return TypedResults.Ok(items);
     }
 
-    public static async Task<Results<Ok<CatalogItem>, NotFound, BadRequest<string>>> GetItemById(
+    public static Task<Results<Ok<CatalogItem>, NotFound, BadRequest<string>>> GetItemById(
         [AsParameters] CatalogServices services,
         int id)
     {
         if (id <= 0)
         {
-            return TypedResults.BadRequest("Id is not valid.");
+            return Task.FromResult<Results<Ok<CatalogItem>, NotFound, BadRequest<string>>>(TypedResults.BadRequest("Id is not valid."));
         }
 
-        var item = await services.Context.CatalogItems.Include(ci => ci.CatalogBrand).SingleOrDefaultAsync(ci => ci.Id == id);
+        var items = services.Context.CatalogItems.Include(ci => ci.CatalogBrand).ToList();
+
+        var item = items.SingleOrDefault(ci => ci.Id == id);
 
         if (item == null)
         {
-            return TypedResults.NotFound();
+            return Task.FromResult<Results<Ok<CatalogItem>, NotFound, BadRequest<string>>>(TypedResults.NotFound());
         }
 
-        return TypedResults.Ok(item);
+        return Task.FromResult<Results<Ok<CatalogItem>, NotFound, BadRequest<string>>>(TypedResults.Ok(item));
     }
 
-    public static async Task<Ok<PaginatedItems<CatalogItem>>> GetItemsByName(
+    public static Task<Ok<PaginatedItems<CatalogItem>>> GetItemsByName(
         [AsParameters] PaginationRequest paginationRequest,
         [AsParameters] CatalogServices services,
         string name)
@@ -85,26 +89,28 @@ public static class CatalogApi
         var pageSize = paginationRequest.PageSize;
         var pageIndex = paginationRequest.PageIndex;
 
-        var totalItems = await services.Context.CatalogItems
+        var allItems = services.Context.CatalogItems
             .Where(c => c.Name.StartsWith(name))
-            .LongCountAsync();
+            .ToList();
 
-        var itemsOnPage = await services.Context.CatalogItems
-            .Where(c => c.Name.StartsWith(name))
+        var totalItems = allItems.Count;
+
+        var itemsOnPage = allItems
             .Skip(pageSize * pageIndex)
             .Take(pageSize)
-            .ToListAsync();
+            .ToList();
 
-        return TypedResults.Ok(new PaginatedItems<CatalogItem>(pageIndex, pageSize, totalItems, itemsOnPage));
+        return Task.FromResult(TypedResults.Ok(new PaginatedItems<CatalogItem>(pageIndex, pageSize, totalItems, itemsOnPage)));
     }
 
-    public static async Task<Results<NotFound, PhysicalFileHttpResult>> GetItemPictureById(CatalogContext context, IWebHostEnvironment environment, int catalogItemId)
+    public static Task<Results<NotFound, PhysicalFileHttpResult>> GetItemPictureById(CatalogContext context, IWebHostEnvironment environment, int catalogItemId)
     {
-        var item = await context.CatalogItems.FindAsync(catalogItemId);
+        var allItems = context.CatalogItems.ToList();
+        var item = allItems.FirstOrDefault(i => i.Id == catalogItemId);
 
         if (item is null)
         {
-            return TypedResults.NotFound();
+            return Task.FromResult<Results<NotFound, PhysicalFileHttpResult>>(TypedResults.NotFound());
         }
 
         var path = GetFullPath(environment.ContentRootPath, item.PictureFileName);
@@ -113,7 +119,7 @@ public static class CatalogApi
         string mimetype = GetImageMimeTypeFromImageFileExtension(imageFileExtension);
         DateTime lastModified = File.GetLastWriteTimeUtc(path);
 
-        return TypedResults.PhysicalFile(path, mimetype, lastModified: lastModified);
+        return Task.FromResult<Results<NotFound, PhysicalFileHttpResult>>(TypedResults.PhysicalFile(path, mimetype, lastModified: lastModified));
     }
 
     public static async Task<Results<BadRequest<string>, RedirectToRouteHttpResult, Ok<PaginatedItems<CatalogItem>>>> GetItemsBySemanticRelevance(
@@ -163,7 +169,7 @@ public static class CatalogApi
         return TypedResults.Ok(new PaginatedItems<CatalogItem>(pageIndex, pageSize, totalItems, itemsOnPage));
     }
 
-    public static async Task<Ok<PaginatedItems<CatalogItem>>> GetItemsByBrandAndTypeId(
+    public static Task<Ok<PaginatedItems<CatalogItem>>> GetItemsByBrandAndTypeId(
         [AsParameters] PaginationRequest paginationRequest,
         [AsParameters] CatalogServices services,
         int typeId,
@@ -179,18 +185,19 @@ public static class CatalogApi
             root = root.Where(c => c.CatalogBrandId == brandId);
         }
 
-        var totalItems = await root
-            .LongCountAsync();
+        var allItems = root.ToList();
 
-        var itemsOnPage = await root
+        var totalItems = allItems.Count;
+
+        var itemsOnPage = allItems
             .Skip(pageSize * pageIndex)
             .Take(pageSize)
-            .ToListAsync();
+            .ToList();
 
-        return TypedResults.Ok(new PaginatedItems<CatalogItem>(pageIndex, pageSize, totalItems, itemsOnPage));
+        return Task.FromResult(TypedResults.Ok(new PaginatedItems<CatalogItem>(pageIndex, pageSize, totalItems, itemsOnPage)));
     }
 
-    public static async Task<Ok<PaginatedItems<CatalogItem>>> GetItemsByBrandId(
+    public static Task<Ok<PaginatedItems<CatalogItem>>> GetItemsByBrandId(
         [AsParameters] PaginationRequest paginationRequest,
         [AsParameters] CatalogServices services,
         int? brandId)
@@ -205,15 +212,16 @@ public static class CatalogApi
             root = root.Where(ci => ci.CatalogBrandId == brandId);
         }
 
-        var totalItems = await root
-            .LongCountAsync();
+        var allItems = root.ToList();
 
-        var itemsOnPage = await root
+        var totalItems = allItems.Count;
+
+        var itemsOnPage = allItems
             .Skip(pageSize * pageIndex)
             .Take(pageSize)
-            .ToListAsync();
+            .ToList();
 
-        return TypedResults.Ok(new PaginatedItems<CatalogItem>(pageIndex, pageSize, totalItems, itemsOnPage));
+        return Task.FromResult(TypedResults.Ok(new PaginatedItems<CatalogItem>(pageIndex, pageSize, totalItems, itemsOnPage)));
     }
 
     public static async Task<Results<Created, NotFound<string>>> UpdateItem(
@@ -294,6 +302,19 @@ public static class CatalogApi
         return TypedResults.NoContent();
     }
 
+    //Deliberately introduce high traffic to simulate a high load scenario. Remove for production.
+    public static Results<Ok<PaginatedItems<CatalogItem>>, BadRequest<string>> GetAllCatalogItems(
+       [AsParameters] PaginationRequest paginationRequest,
+       [AsParameters] CatalogServices services)
+    {
+        
+        // JANK: Just to simulate a slow query
+        for (int i = 0; i < 500; i++)
+        {
+            GetAllItems(paginationRequest, services);
+        }
+       return GetAllItems(paginationRequest, services);
+    }
     private static string GetImageMimeTypeFromImageFileExtension(string extension) => extension switch
     {
         ".png" => "image/png",
