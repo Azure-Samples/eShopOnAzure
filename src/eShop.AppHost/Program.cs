@@ -83,11 +83,11 @@ if (useOpenAI)
 {
     const string openAIName = "openai";
     
-    //const string textEmbeddingName = "contoso-es-ada-002";
-    //const string chatModelName = "contoso-es-gpt-35-turbo-16k";
+    const string textEmbeddingName = "contoso-es-ada-002";
+    const string chatModelName = "contoso-es-gpt-35-turbo-16k";
     
-    const string textEmbeddingName = "shboyer-text-emdedding-ada-002";
-    const string chatModelName = "shboyer-gpt35deployment";
+    //const string textEmbeddingName = "shboyer-text-emdedding-ada-002";
+    //const string chatModelName = "shboyer-gpt35deployment";
 
     // to use an existing OpenAI resource, add the following to the AppHost user secrets:
     // "ConnectionStrings": {
