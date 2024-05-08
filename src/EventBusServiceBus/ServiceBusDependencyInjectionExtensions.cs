@@ -22,7 +22,7 @@ public static class ServiceBusDependencyInjectionExtensions
 
         builder.AddAzureServiceBusClient(connectionName, o =>
         {
-            o.Tracing = true;
+            o.DisableTracing = false;
             o.HealthCheckTopicName = "eshop_event_bus";
 
             // When using the namespace instead of a full connection string, Service Bus will attempt to connect with your Azure credentials
