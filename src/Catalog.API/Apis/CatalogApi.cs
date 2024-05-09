@@ -302,13 +302,11 @@ public static class CatalogApi
         return TypedResults.NoContent();
     }
 
-    //Deliberately introduce high traffic to simulate a high load scenario. Remove for production.
+    //Generate a high load scenario. Remove for production.
     public static Results<Ok<PaginatedItems<CatalogItem>>, BadRequest<string>> GetAllCatalogItems(
        [AsParameters] PaginationRequest paginationRequest,
        [AsParameters] CatalogServices services)
     {
-        
-        // JANK: Just to simulate a slow query
         for (int i = 0; i < 500; i++)
         {
             GetAllItems(paginationRequest, services);
