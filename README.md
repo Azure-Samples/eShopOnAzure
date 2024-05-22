@@ -11,10 +11,11 @@ A reference .NET application implementing an eCommerce web site using a services
 ### Prerequisites
 
 - Clone the eShop repository: https://github.com/Azure-Samples/eshopOnAzure
-- (Windows only) Install Visual Studio. Visual Studio contains tooling support for .NET Aspire that you will want to have. [Visual Studio 2022 version 17.10 Preview](https://visualstudio.microsoft.com/vs/preview/).
+- (Windows only) Install Visual Studio. Visual Studio contains tooling support for .NET Aspire that you will want to have. [Visual Studio 2022 version 17.10](https://visualstudio.microsoft.com/downloads/).
   - During installation, ensure that the following are selected:
     - `ASP.NET and web development` workload.
     - `.NET Aspire SDK` component in `Individual components`.
+    - `.NET Multi-platform App UI development` workload for the MAUI mobile app.
 - Install the latest [.NET 8 SDK](https://github.com/dotnet/installer#installers-and-binaries)
 - On Mac/Linux (or if not using Visual Studio), install the Aspire workload with the following commands:
 ```powershell
