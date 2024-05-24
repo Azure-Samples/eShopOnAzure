@@ -1,8 +1,8 @@
 ﻿namespace eShop.ClientApp.Views;
 
-public partial class CampaignView : ContentPageBase
+public partial class CatalogItemView
 {
-    public CampaignView(CampaignDetailsViewModel viewModel)
+    public CatalogItemView(CatalogItemViewModel viewModel)
     {
         BindingContext = viewModel;
         InitializeComponent();

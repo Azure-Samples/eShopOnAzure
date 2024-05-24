@@ -1,23 +1,20 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 
 namespace eShop.ClientApp.Models.Orders;
 
 public class OrderItem
 {
-    public string ProductId { get; set; }
+    public long ProductId { get; set; }
+    
     public Guid? OrderId { get; set; }
 
-    [JsonPropertyName("unitprice")]
-    public decimal UnitPrice { get; set; }
+    [JsonPropertyName("unitprice")] public decimal UnitPrice { get; set; }
 
-    [JsonPropertyName("productname")]
-    public string ProductName { get; set; }
+    [JsonPropertyName("productname")] public string ProductName { get; set; }
 
-    [JsonPropertyName("pictureurl")]
-    public string PictureUrl { get; set; }
+    [JsonPropertyName("pictureurl")] public string PictureUrl { get; set; }
 
-    [JsonPropertyName("units")]
-    public int Quantity { get; set; }
+    [JsonPropertyName("units")] public int Quantity { get; set; }
 
     public decimal Discount { get; set; }
     public decimal Total => Quantity * UnitPrice;

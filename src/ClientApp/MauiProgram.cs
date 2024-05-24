@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Maui;
+using CommunityToolkit.Maui;
 using eShop.ClientApp.Services;
 using eShop.ClientApp.Services.AppEnvironment;
 using eShop.ClientApp.Services.Basket;
@@ -6,22 +6,23 @@ using eShop.ClientApp.Services.Catalog;
 using eShop.ClientApp.Services.FixUri;
 using eShop.ClientApp.Services.Identity;
 using eShop.ClientApp.Services.Location;
-using eShop.ClientApp.Services.Marketing;
 using eShop.ClientApp.Services.OpenUrl;
 using eShop.ClientApp.Services.Order;
 using eShop.ClientApp.Services.RequestProvider;
 using eShop.ClientApp.Services.Settings;
 using eShop.ClientApp.Services.Theme;
-using eShop.ClientApp.Services.User;
 using eShop.ClientApp.Views;
+using IdentityModel.OidcClient;
 using Microsoft.Extensions.Logging;
+using IBrowser = IdentityModel.OidcClient.Browser.IBrowser;
 
 namespace eShop.ClientApp;
 
 public static class MauiProgram
 {
     public static MauiApp CreateMauiApp()
-        => MauiApp
+    {
+        return MauiApp
             .CreateBuilder()
             .UseMauiApp<App>()
             .ConfigureEffects(
@@ -48,11 +49,14 @@ public static class MauiProgram
                         .AddAppAction(AppActions.ViewProfileAction)
                         .OnAppAction(App.HandleAppActions);
                 })
+#if !WINDOWS
             .UseMauiMaps()
+#endif
             .RegisterAppServices()
             .RegisterViewModels()
             .RegisterViews()
             .Build();
+    }
 
     public static MauiAppBuilder RegisterAppServices(this MauiAppBuilder mauiAppBuilder)
     {
@@ -70,21 +74,23 @@ public static class MauiProgram
         mauiAppBuilder.Services.AddSingleton<IAppEnvironmentService, AppEnvironmentService>(
             serviceProvider =>
             {
-                var requestProvider = serviceProvider.GetService<IRequestProvider>();
-                var fixUriService = serviceProvider.GetService<IFixUriService>();
-                var settingsService = serviceProvider.GetService<ISettingsService>();
+                var requestProvider = serviceProvider.GetRequiredService<IRequestProvider>();
+                var fixUriService = serviceProvider.GetRequiredService<IFixUriService>();
+                var settingsService = serviceProvider.GetRequiredService<ISettingsService>();
+                var identityService = serviceProvider.GetRequiredService<IIdentityService>();
 
                 var aes =
                     new AppEnvironmentService(
-                        new BasketMockService(), new BasketService(requestProvider, fixUriService),
-                        new CampaignMockService(), new CampaignService(requestProvider, fixUriService),
-                        new CatalogMockService(), new CatalogService(requestProvider, fixUriService),
-                        new OrderMockService(), new OrderService(requestProvider),
-                        new UserMockService(), new UserService(requestProvider));
+                        new BasketMockService(), new BasketService(identityService, settingsService, fixUriService),
+                        new CatalogMockService(), new CatalogService(settingsService, requestProvider, fixUriService),
+                        new OrderMockService(), new OrderService(identityService, settingsService, requestProvider),
+                        new IdentityMockService(), identityService);
 
                 aes.UpdateDependencies(settingsService.UseMocks);
                 return aes;
             });
+
+        mauiAppBuilder.Services.AddTransient<IBrowser, MauiAuthenticationBrowser>();
 
 #if DEBUG
         mauiAppBuilder.Logging.AddDebug();
@@ -99,23 +105,22 @@ public static class MauiProgram
         mauiAppBuilder.Services.AddSingleton<LoginViewModel>();
         mauiAppBuilder.Services.AddSingleton<BasketViewModel>();
         mauiAppBuilder.Services.AddSingleton<CatalogViewModel>();
+        mauiAppBuilder.Services.AddSingleton<CatalogItemViewModel>();
         mauiAppBuilder.Services.AddSingleton<MapViewModel>();
         mauiAppBuilder.Services.AddSingleton<ProfileViewModel>();
 
         mauiAppBuilder.Services.AddTransient<CheckoutViewModel>();
         mauiAppBuilder.Services.AddTransient<OrderDetailViewModel>();
         mauiAppBuilder.Services.AddTransient<SettingsViewModel>();
-        mauiAppBuilder.Services.AddTransient<CampaignViewModel>();
-        mauiAppBuilder.Services.AddTransient<CampaignDetailsViewModel>();
 
         return mauiAppBuilder;
     }
 
     public static MauiAppBuilder RegisterViews(this MauiAppBuilder mauiAppBuilder)
     {
+        mauiAppBuilder.Services.AddSingleton<CatalogItemView>();
+
         mauiAppBuilder.Services.AddTransient<BasketView>();
-        mauiAppBuilder.Services.AddTransient<CampaignDetailsView>();
-        mauiAppBuilder.Services.AddTransient<CampaignView>();
         mauiAppBuilder.Services.AddTransient<CatalogView>();
         mauiAppBuilder.Services.AddTransient<CheckoutView>();
         mauiAppBuilder.Services.AddTransient<FiltersView>();
