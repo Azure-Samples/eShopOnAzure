@@ -62,10 +62,12 @@ var webHooksApi = builder.AddProject<Projects.Webhooks_API>("webhooks-api")
 // Reverse proxies
 builder.AddProject<Projects.Mobile_Bff_Shopping>("mobile-bff")
     .WithReference(catalogApi)
-	.WithReference(appInsights);
+    .WithReference(orderingApi)
+    .WithReference(basketApi)
+    .WithReference(appInsights);
 
 // Apps
-var webhooksClient = builder.AddProject<Projects.WebhookClient>("webhooksclient")
+var webhooksClient = builder.AddProject<Projects.WebhookClient>("webhooksclient", launchProfileName)
     .WithReference(webHooksApi)
 	.WithReference(appInsights);
 
@@ -82,7 +84,7 @@ bool useOpenAI = false;
 if (useOpenAI)
 {
     const string openAIName = "openai";
-    const string textEmbeddingName = "text-embedding-ada-002";
+    const string textEmbeddingName = "text-embedding-3-small";
     const string chatModelName = "gpt-35-turbo-16k";
 
     // to use an existing OpenAI resource, add the following to the AppHost user secrets:
@@ -105,7 +107,7 @@ if (useOpenAI)
         // }
         openAI = builder.AddAzureOpenAI(openAIName)
             .AddDeployment(new AzureOpenAIDeployment(chatModelName, "gpt-35-turbo", "0613"))
-            .AddDeployment(new AzureOpenAIDeployment(textEmbeddingName, "text-embedding-ada-002", "2"));
+            .AddDeployment(new AzureOpenAIDeployment(textEmbeddingName, "text-embedding-3-small", "1"));
     }
 
     catalogApi

@@ -11,7 +11,7 @@ public partial class AppShell : Shell
     {
         _navigationService = navigationService;
 
-        AppShell.InitializeRouting();
+        InitializeRouting();
         InitializeComponent();
     }
 
@@ -28,11 +28,10 @@ public partial class AppShell : Shell
     private static void InitializeRouting()
     {
         Routing.RegisterRoute("Filter", typeof(FiltersView));
-        Routing.RegisterRoute("Basket", typeof(BasketView));
+        Routing.RegisterRoute("ViewCatalogItem", typeof(CatalogItemView));
         Routing.RegisterRoute("Basket", typeof(BasketView));
         Routing.RegisterRoute("Settings", typeof(SettingsView));
         Routing.RegisterRoute("OrderDetail", typeof(OrderDetailView));
-        Routing.RegisterRoute("CampaignDetails", typeof(CampaignDetailsView));
         Routing.RegisterRoute("Checkout", typeof(CheckoutView));
     }
 }

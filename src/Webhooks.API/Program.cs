@@ -3,19 +3,21 @@
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
-builder.AddDefaultOpenApi();
 builder.AddApplicationServices();
+
+var withApiVersioning = builder.Services.AddApiVersioning();
+
+builder.AddDefaultOpenApi(withApiVersioning);
 
 var app = builder.Build();
 
-app.UseDefaultOpenApi();
-
 app.MapDefaultEndpoints();
 
-app.MapGroup("/api/v1/webhooks")
-   .WithTags("WebHooks API")
-   .MapWebhooksApi()
-   .RequireAuthorization()
-   .RequireScope("webhooks");
+var webHooks = app.NewVersionedApi("Web Hooks");
 
+webHooks.MapWebHooksApiV1()
+        .RequireAuthorization()
+        .RequireScope("webhooks");
+
+app.UseDefaultOpenApi();
 app.Run();
