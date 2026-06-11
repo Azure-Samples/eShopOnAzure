@@ -1,4 +1,4 @@
-﻿
+
 using Aspire.Hosting;
 using eShop.AppHost;
 using Microsoft.Extensions.Configuration;
@@ -14,7 +14,7 @@ var appInsights = builder.ExecutionContext.IsPublishMode
 var redis = builder.AddRedis("redis");
 
 var serviceBus = builder.ExecutionContext.IsPublishMode
-    ? builder.AddAzureServiceBus("eventBus").AddTopic("eshop_event_bus")
+    ? builder.AddAzureServiceBus("eventBus").AddTopic("eshop-event-bus")
     : builder.AddConnectionString("eventBus");
 
 var postgres = builder.AddPostgres("postgres")

@@ -1,4 +1,4 @@
-﻿using System.Text.Json;
+using System.Text.Json;
 using Azure.Messaging.ServiceBus;
 using Azure.Messaging.ServiceBus.Administration;
 using eShop.EventBus.Abstractions;
@@ -19,7 +19,7 @@ public sealed class ServiceBusEventBus(
     ServiceBusAdministrationClient adminClient
     ) : IEventBus, IAsyncDisposable, IHostedService
 {
-    private const string TopicName = "eshop_event_bus";
+    private const string TopicName = "eshop-event-bus";
 
     private static readonly JsonSerializerOptions s_indentedOptions = new() { WriteIndented = true };
     private static readonly JsonSerializerOptions s_caseInsensitiveOptions = new() { PropertyNameCaseInsensitive = true };

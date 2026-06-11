@@ -1,4 +1,4 @@
-﻿using eShop.EventBus.Abstractions;
+using eShop.EventBus.Abstractions;
 using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -23,7 +23,7 @@ public static class ServiceBusDependencyInjectionExtensions
         builder.AddAzureServiceBusClient(connectionName, o =>
         {
             o.DisableTracing = false;
-            o.HealthCheckTopicName = "eshop_event_bus";
+            o.HealthCheckTopicName = "eshop-event-bus";
 
             // When using the namespace instead of a full connection string, Service Bus will attempt to connect with your Azure credentials
             // Make sure that you have the "Azure Service Bus Data Owner" role so that you can create the subscription rules,
